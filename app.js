@@ -8,12 +8,11 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// CORS — allow every origin listed in CORS_ORIGIN (comma separated)
-app.use(cors({
-  origin: process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
-    : '*'
-}));
+// CORS — allow all origins.
+// Safe because auth uses `Authorization: Bearer` headers (no cookies/credentials mode),
+// so a blanket * cannot be abused to carry session cookies. This also means a stale or
+// missing CORS_ORIGIN env var can never block a deployed frontend again.
+app.use(cors());
 app.use(express.json({ limit: '10mb' })); // allow base64 screenshot uploads
 
 app.get('/', (req, res) => res.json({ message: 'Backend API Running' }));
